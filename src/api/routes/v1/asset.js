@@ -35,6 +35,9 @@ module.exports = app => {
 
   router.get(
     '/:id',
+    schemaValidation({
+      params: paramsSchema
+    }),
     asyncHandler(async (req, res) => {
       const assets = await getAssetById(req.params.id);
 

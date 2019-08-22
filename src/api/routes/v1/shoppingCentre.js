@@ -35,6 +35,9 @@ module.exports = app => {
 
   router.get(
     '/:id',
+    schemaValidation({
+      params: paramsSchema
+    }),
     asyncHandler(async (req, res) => {
       const shoppingCentre = await getShoppingCentreById(req.params.id);
 
