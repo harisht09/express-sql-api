@@ -46,7 +46,7 @@ module.exports = app => {
     })
   );
 
-  /* PROTECTED ROUTES - All routes beyond this point will require a valid auth token */
+  /* PROTECTED ROUTES - all routes beyond this point will require a valid auth token */
   router.use(authValidation);
 
   router.post(

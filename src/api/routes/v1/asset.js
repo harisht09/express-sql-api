@@ -2,6 +2,7 @@ const router = require('express').Router();
 const httpError = require('http-errors');
 const asyncHandler = require('express-async-handler');
 const authValidation = require('../../../middlewares/authValidation');
+const { Validator } = require('express-json-validator-middleware');
 
 const {
   getAllAssets,
@@ -10,6 +11,10 @@ const {
   upsertAsset,
   removeAsset
 } = require('../../../services/asset');
+const { bodySchema, paramsSchema } = require('../../../schemas/asset');
+
+const validator = new Validator({ allErrors: true });
+const schemaValidation = validator.validate;
 
 module.exports = app => {
   app.use('/assets', router);
@@ -41,11 +46,14 @@ module.exports = app => {
     })
   );
 
-  /* PROTECTED ROUTES - All routes beyond this point will require a valid auth token */
+  /* PROTECTED ROUTES - all routes beyond this point will require a valid auth token */
   router.use(authValidation);
 
   router.post(
     '/',
+    schemaValidation({
+      body: bodySchema
+    }),
     asyncHandler(async (req, res) => {
       const assets = await createAsset(req.body);
 
@@ -59,6 +67,10 @@ module.exports = app => {
 
   router.put(
     '/:id',
+    schemaValidation({
+      body: bodySchema,
+      params: paramsSchema
+    }),
     asyncHandler(async (req, res) => {
       const assets = await upsertAsset(req.params.id, req.body);
 
@@ -72,6 +84,9 @@ module.exports = app => {
 
   router.delete(
     '/:id',
+    schemaValidation({
+      params: paramsSchema
+    }),
     asyncHandler(async (req, res) => {
       const assets = await getAssetById(req.params.id);
 
