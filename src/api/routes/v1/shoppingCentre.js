@@ -1,8 +1,7 @@
-const router = require('express').Router();
+const router = require('express-promise-router')();
 const httpError = require('http-errors');
-const asyncHandler = require('express-async-handler');
-const authValidation = require('../../../middlewares/authValidation');
 const { Validator } = require('express-json-validator-middleware');
+const authValidation = require('../../../middlewares/authValidation');
 
 const {
   getAllShoppingCentres,
@@ -20,25 +19,22 @@ module.exports = app => {
   app.use('/shoppingCentres', router);
 
   /* PUBLIC ROUTES */
-  router.get(
-    '/',
-    asyncHandler(async (req, res) => {
-      let shoppingCentres = [];
-      try {
-        shoppingCentres = await getAllShoppingCentres();
-      } catch (err) {
-        throw httpError.InternalServerError('Could not get shopping centres');
-      }
-      return res.json(shoppingCentres);
-    })
-  );
+  router.get('/', async (req, res) => {
+    let shoppingCentres = [];
+    try {
+      shoppingCentres = await getAllShoppingCentres();
+    } catch (err) {
+      throw httpError.InternalServerError('Could not get shopping centres');
+    }
+    return res.json(shoppingCentres);
+  });
 
   router.get(
     '/:id',
     schemaValidation({
       params: paramsSchema
     }),
-    asyncHandler(async (req, res) => {
+    async (req, res) => {
       const shoppingCentre = await getShoppingCentreById(req.params.id);
 
       if (!shoppingCentre) {
@@ -46,7 +42,7 @@ module.exports = app => {
       }
 
       return res.json(shoppingCentre);
-    })
+    }
   );
 
   /* PROTECTED ROUTES - all routes beyond this point will require a valid auth token */
@@ -57,7 +53,7 @@ module.exports = app => {
     schemaValidation({
       body: bodySchema
     }),
-    asyncHandler(async (req, res) => {
+    async (req, res) => {
       const shoppingCentre = await createShoppingCentre(req.body);
 
       if (!shoppingCentre) {
@@ -65,7 +61,7 @@ module.exports = app => {
       }
 
       return res.json(shoppingCentre);
-    })
+    }
   );
 
   router.put(
@@ -74,7 +70,7 @@ module.exports = app => {
       body: bodySchema,
       params: paramsSchema
     }),
-    asyncHandler(async (req, res) => {
+    async (req, res) => {
       const shoppingCentre = await upsertShoppingCentre(req.params.id, req.body);
 
       if (!shoppingCentre) {
@@ -82,7 +78,7 @@ module.exports = app => {
       }
 
       return res.json(shoppingCentre);
-    })
+    }
   );
 
   router.delete(
@@ -90,7 +86,7 @@ module.exports = app => {
     schemaValidation({
       params: paramsSchema
     }),
-    asyncHandler(async (req, res) => {
+    async (req, res) => {
       const shoppingCentre = await getShoppingCentreById(req.params.id);
 
       if (!shoppingCentre) {
@@ -106,6 +102,6 @@ module.exports = app => {
       return res.json({
         message: `Shopping centre: ${shoppingCentre.name} was removed successfully`
       });
-    })
+    }
   );
 };

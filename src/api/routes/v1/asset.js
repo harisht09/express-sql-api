@@ -1,6 +1,5 @@
-const router = require('express').Router();
+const router = require('express-promise-router')();
 const httpError = require('http-errors');
-const asyncHandler = require('express-async-handler');
 const authValidation = require('../../../middlewares/authValidation');
 const { Validator } = require('express-json-validator-middleware');
 
@@ -20,25 +19,22 @@ module.exports = app => {
   app.use('/assets', router);
 
   /* PUBLIC ROUTES */
-  router.get(
-    '/',
-    asyncHandler(async (req, res) => {
-      let assets = [];
-      try {
-        assets = await getAllAssets();
-      } catch (err) {
-        throw httpError.InternalServerError('Could not get assets');
-      }
-      return res.json(assets);
-    })
-  );
+  router.get('/', async (req, res) => {
+    let assets = [];
+    try {
+      assets = await getAllAssets();
+    } catch (err) {
+      throw httpError.InternalServerError('Could not get assets');
+    }
+    return res.json(assets);
+  });
 
   router.get(
     '/:id',
     schemaValidation({
       params: paramsSchema
     }),
-    asyncHandler(async (req, res) => {
+    async (req, res) => {
       const assets = await getAssetById(req.params.id);
 
       if (!assets) {
@@ -46,7 +42,7 @@ module.exports = app => {
       }
 
       return res.json(assets);
-    })
+    }
   );
 
   /* PROTECTED ROUTES - all routes beyond this point will require a valid auth token */
@@ -57,7 +53,7 @@ module.exports = app => {
     schemaValidation({
       body: bodySchema
     }),
-    asyncHandler(async (req, res) => {
+    async (req, res) => {
       const assets = await createAsset(req.body);
 
       if (!assets) {
@@ -65,7 +61,7 @@ module.exports = app => {
       }
 
       return res.json(assets);
-    })
+    }
   );
 
   router.put(
@@ -74,7 +70,7 @@ module.exports = app => {
       body: bodySchema,
       params: paramsSchema
     }),
-    asyncHandler(async (req, res) => {
+    async (req, res) => {
       const assets = await upsertAsset(req.params.id, req.body);
 
       if (!assets) {
@@ -82,7 +78,7 @@ module.exports = app => {
       }
 
       return res.json(assets);
-    })
+    }
   );
 
   router.delete(
@@ -90,7 +86,7 @@ module.exports = app => {
     schemaValidation({
       params: paramsSchema
     }),
-    asyncHandler(async (req, res) => {
+    async (req, res) => {
       const assets = await getAssetById(req.params.id);
 
       if (!assets) {
@@ -106,6 +102,6 @@ module.exports = app => {
       return res.json({
         message: `Asset: ${assets.name} was removed successfully`
       });
-    })
+    }
   );
 };
