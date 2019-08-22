@@ -1,8 +1,8 @@
 const dotenv = require('dotenv');
 
 const envConfig = dotenv.config();
-if (!envConfig) {
-  throw new Error("Couldn't find .env file");
+if (envConfig.error) {
+  throw new Error('Could not find .env file');
 }
 
 const env = process.env.NODE_ENV || 'development';
