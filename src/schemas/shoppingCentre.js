@@ -1,15 +1,28 @@
-module.exports = {
-  body: {
-    type: 'object',
-    properties: {
-      name: {
-        type: 'string',
-        required: true
-      },
-      address: {
-        type: 'string',
-        required: true
-      }
+const bodySchema = {
+  type: 'object',
+  required: ['name', 'address'],
+  properties: {
+    name: {
+      type: 'string'
+    },
+    address: {
+      type: 'string'
     }
   }
+};
+
+const paramsSchema = {
+  type: 'object',
+  required: ['id'],
+  properties: {
+    id: {
+      type: 'string',
+      format: 'uuid'
+    }
+  }
+};
+
+module.exports = {
+  bodySchema,
+  paramsSchema
 };

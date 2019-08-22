@@ -1,9 +1,12 @@
+const { ValidationError } = require('express-json-validator-middleware');
+
 module.exports = (err, req, res, next) => {
-  if (err.name === 'JsonSchemaValidation') {
+  if (err instanceof ValidationError) {
+    const { name, validationErrors } = err;
     return res.status(400).json({
       statusCode: 400,
-      error: err.name,
-      validations: err.validations
+      error: name,
+      validationErrors
     });
   } else {
     next(err);
