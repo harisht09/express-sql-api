@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const httpErrors = require('http-errors');
+const httpError = require('http-errors');
 const config = require('../config');
 
 module.exports = async (req, res, next) => {
@@ -7,11 +7,11 @@ module.exports = async (req, res, next) => {
     try {
       const token = req.headers.authorization.split(' ')[1];
       await jwt.verify(token, config.jwtSecret);
-      next();
+      return next();
     } catch (err) {
-      return res.status(401).json(httpErrors.Unauthorized('Invalid token'));
+      return next(httpError.Unauthorized('Invalid authorization token'));
     }
-  } else {
-    res.status(401).json(httpErrors.Unauthorized('No authorization token was found'));
   }
+
+  return next(httpError.Unauthorized('No authorization token found'));
 };

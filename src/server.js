@@ -1,8 +1,9 @@
 const express = require('express');
 const expressPino = require('express-pino-logger');
 const bodyParser = require('body-parser');
-const routes = require('./api');
 
+const routes = require('./api');
+const errorHandler = require('./middlewares/errorHandler');
 const API_VERSION = 1;
 
 module.exports = logger => {
@@ -16,6 +17,9 @@ module.exports = logger => {
 
   // load api routes
   app.use(`/api/v${API_VERSION}`, routes());
+
+  // general error handler
+  app.use(errorHandler);
 
   return app;
 };

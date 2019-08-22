@@ -10,12 +10,12 @@ async function getUserByUsername(username) {
 async function authenticateUser(user, password) {
   const authenticated = await bcrypt.compare(password, user.password);
   if (!authenticated) {
-    throw new Error('Could not authenticate user');
+    return false;
   }
 
   const { id, username } = user;
   const token = jwt.sign({ id, username }, config.jwtSecret, {
-    expiresIn: 60 * 60
+    expiresIn: '1h'
   });
 
   return {
