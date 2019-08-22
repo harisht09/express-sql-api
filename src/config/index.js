@@ -1,3 +1,4 @@
+const path = require('path');
 const dotenv = require('dotenv');
 
 const envConfig = dotenv.config();
@@ -14,14 +15,15 @@ const defaults = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   host: process.env.DB_HOSTNAME,
-  dialect: process.env.DB_DIALECT
+  dialect: process.env.DB_DIALECT,
+  jwtSecret: process.env.JWT_SECRET
 };
 
 const config = {
   development: {
     ...defaults,
     dialect: 'sqlite',
-    storage: '../db.sqlite'
+    storage: path.resolve('db.sqlite')
   },
   test: {
     ...defaults
