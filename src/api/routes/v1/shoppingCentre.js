@@ -1,15 +1,19 @@
 const router = require('express').Router();
 const httpError = require('http-errors');
 const asyncHandler = require('express-async-handler');
-const schemaValidation = require('express-jsonschema').validate;
 const authValidation = require('../../../middlewares/authValidation');
+const { Validator } = require('express-json-validator-middleware');
 
 const {
   getAllShoppingCentres,
   getShoppingCentreById,
-  createShoppingCentre
+  createShoppingCentre,
+  upsertShoppingCentre
 } = require('../../../services/shoppingCentre');
-const SHOPPING_CENTRE_SCHEMA = require('../../../schemas/shoppingCentre');
+const { bodySchema, paramsSchema } = require('../../../schemas/shoppingCentre');
+
+const validator = new Validator({ allErrors: true });
+const schemaValidation = validator.validate;
 
 module.exports = app => {
   app.use('/shoppingCentres', router);
@@ -42,13 +46,33 @@ module.exports = app => {
 
   router.post(
     '/',
-    authValidation,
-    schemaValidation(SHOPPING_CENTRE_SCHEMA),
+    authValidation, // protected route
+    schemaValidation({
+      body: bodySchema
+    }),
     asyncHandler(async (req, res) => {
       const shoppingCentre = await createShoppingCentre(req.body);
 
       if (!shoppingCentre) {
         throw httpError.InternalServerError('Could not create shopping centre');
+      }
+
+      return res.json(shoppingCentre);
+    })
+  );
+
+  router.put(
+    '/:id',
+    authValidation, // protected route
+    schemaValidation({
+      body: bodySchema,
+      params: paramsSchema
+    }),
+    asyncHandler(async (req, res) => {
+      const shoppingCentre = await upsertShoppingCentre(req.params.id, req.body);
+
+      if (!shoppingCentre) {
+        throw httpError.InternalServerError('Could not update shopping centre');
       }
 
       return res.json(shoppingCentre);
