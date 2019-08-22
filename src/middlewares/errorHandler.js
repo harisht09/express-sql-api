@@ -9,11 +9,11 @@ module.exports = (err, req, res, next) => {
       statusCode: '500',
       error: 'Internal Server Error'
     });
+  } else {
+    return res.status(status).json({
+      statusCode: status,
+      error: name,
+      message
+    });
   }
-
-  return res.status(status).json({
-    statusCode: status,
-    error: name,
-    message
-  });
 };

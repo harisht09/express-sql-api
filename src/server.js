@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 
 const routes = require('./api');
 const errorHandler = require('./middlewares/errorHandler');
+const schemaErrorHandler = require('./middlewares/schemaErrorHandler');
+
 const API_VERSION = 1;
 
 module.exports = logger => {
@@ -17,6 +19,9 @@ module.exports = logger => {
 
   // load api routes
   app.use(`/api/v${API_VERSION}`, routes());
+
+  // schema error handler
+  app.use(schemaErrorHandler);
 
   // general error handler
   app.use(errorHandler);
