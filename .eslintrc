@@ -1,6 +1,6 @@
 {
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
-  "plugins": ["prettier"],
+  "extends": ["eslint:recommended", "plugin:prettier/recommended", "plugin:mocha/recommended"],
+  "plugins": ["prettier", "mocha"],
   "rules": {
     "prettier/prettier": ["error"]
   },
@@ -10,6 +10,7 @@
   "env": {
     "commonjs": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "mocha": true
   }
 }

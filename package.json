@@ -7,14 +7,17 @@
     "start": "node .",
     "start:dev": "nodemon .",
     "bootstrap": "npx sequelize db:migrate && npx sequelize db:seed:all",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/**/*.spec.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^6.2.1",
     "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-mocha": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "mocha": "^6.2.0",
     "prettier": "^1.18.2"
   },
   "dependencies": {

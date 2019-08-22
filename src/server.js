@@ -12,7 +12,9 @@ module.exports = logger => {
   const app = express();
 
   // logging
-  app.use(expressPino({ logger }));
+  if (logger) {
+    app.use(expressPino({ logger }));
+  }
 
   // parse req.body into json
   app.use(bodyParser.json());
