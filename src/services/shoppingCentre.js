@@ -28,9 +28,14 @@ async function upsertShoppingCentre(id, properties) {
   return shoppingCentre;
 }
 
+async function removeShoppingCentre(shoppingCentre) {
+  return shoppingCentre.destroy();
+}
+
 module.exports = {
   getShoppingCentreById,
   getAllShoppingCentres,
   createShoppingCentre,
-  upsertShoppingCentre
+  upsertShoppingCentre,
+  removeShoppingCentre
 };

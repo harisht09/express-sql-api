@@ -8,7 +8,8 @@ const {
   getAllShoppingCentres,
   getShoppingCentreById,
   createShoppingCentre,
-  upsertShoppingCentre
+  upsertShoppingCentre,
+  removeShoppingCentre
 } = require('../../../services/shoppingCentre');
 const { bodySchema, paramsSchema } = require('../../../schemas/shoppingCentre');
 
@@ -18,6 +19,7 @@ const schemaValidation = validator.validate;
 module.exports = app => {
   app.use('/shoppingCentres', router);
 
+  /* PUBLIC ROUTES */
   router.get(
     '/',
     asyncHandler(async (req, res) => {
@@ -44,9 +46,11 @@ module.exports = app => {
     })
   );
 
+  /* PROTECTED ROUTES - All routes beyond this point will require a valid auth token */
+  router.use(authValidation);
+
   router.post(
     '/',
-    authValidation, // protected route
     schemaValidation({
       body: bodySchema
     }),
@@ -63,7 +67,6 @@ module.exports = app => {
 
   router.put(
     '/:id',
-    authValidation, // protected route
     schemaValidation({
       body: bodySchema,
       params: paramsSchema
@@ -76,6 +79,30 @@ module.exports = app => {
       }
 
       return res.json(shoppingCentre);
+    })
+  );
+
+  router.delete(
+    '/:id',
+    schemaValidation({
+      params: paramsSchema
+    }),
+    asyncHandler(async (req, res) => {
+      const shoppingCentre = await getShoppingCentreById(req.params.id);
+
+      if (!shoppingCentre) {
+        throw httpError.NotFound('Could not find shopping center to remove');
+      }
+
+      try {
+        await removeShoppingCentre(shoppingCentre);
+      } catch (err) {
+        throw httpError.InternalServerError('Could not remove shopping centre');
+      }
+
+      return res.json({
+        message: `Shopping centre: ${shoppingCentre.name} was removed successfully`
+      });
     })
   );
 };
