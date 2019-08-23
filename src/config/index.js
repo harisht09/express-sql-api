@@ -9,8 +9,8 @@ if (envConfig.error) {
 const env = process.env.NODE_ENV || 'development';
 
 const defaults = {
-  port: process.env.PORT || 4000,
-  logLevel: process.env.LOG_LEVEL || 'info',
+  port: process.env.PORT,
+  logLevel: process.env.LOG_LEVEL,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
@@ -22,6 +22,7 @@ const defaults = {
 const config = {
   development: {
     ...defaults,
+    logLevel: 'debug',
     dialect: 'sqlite',
     storage: path.resolve('db.sqlite')
   },

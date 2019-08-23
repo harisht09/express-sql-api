@@ -24,7 +24,9 @@ module.exports = app => {
     try {
       shoppingCentres = await getAllShoppingCentres();
     } catch (err) {
-      throw httpError.InternalServerError('Could not get shopping centres');
+      const message = 'Could not get shopping centres';
+      req.log.error(message);
+      throw httpError.InternalServerError(message);
     }
     return res.json(shoppingCentres);
   });
@@ -38,7 +40,9 @@ module.exports = app => {
       const shoppingCentre = await getShoppingCentreById(req.params.id);
 
       if (!shoppingCentre) {
-        throw httpError.NotFound('Shopping centre not found');
+        const message = 'Shopping centre not found';
+        req.log.error(message);
+        throw httpError.NotFound(message);
       }
 
       return res.json(shoppingCentre);
@@ -57,7 +61,9 @@ module.exports = app => {
       const shoppingCentre = await createShoppingCentre(req.body);
 
       if (!shoppingCentre) {
-        throw httpError.InternalServerError('Could not create shopping centre');
+        const message = 'Could not create shopping centre';
+        req.log.error(message);
+        throw httpError.InternalServerError(message);
       }
 
       return res.json(shoppingCentre);
@@ -74,7 +80,9 @@ module.exports = app => {
       const shoppingCentre = await upsertShoppingCentre(req.params.id, req.body);
 
       if (!shoppingCentre) {
-        throw httpError.InternalServerError('Could not update shopping centre');
+        const message = 'Could not update shopping centre';
+        req.log.error(message);
+        throw httpError.InternalServerError(message);
       }
 
       return res.json(shoppingCentre);
@@ -90,13 +98,17 @@ module.exports = app => {
       const shoppingCentre = await getShoppingCentreById(req.params.id);
 
       if (!shoppingCentre) {
-        throw httpError.NotFound('Could not find shopping center to remove');
+        const message = 'Could not find shopping centre to remove';
+        req.log.error(message);
+        throw httpError.NotFound(message);
       }
 
       try {
         await removeShoppingCentre(shoppingCentre);
       } catch (err) {
-        throw httpError.InternalServerError('Could not remove shopping centre');
+        const message = 'Could not remove shopping centre';
+        req.log.error(message);
+        throw httpError.InternalServerError(message);
       }
 
       return res.json({

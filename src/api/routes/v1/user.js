@@ -10,13 +10,17 @@ module.exports = app => {
     const user = await getUserByUsername(req.body.username);
 
     if (!user) {
-      throw httpError.NotFound('User not found');
+      const message = 'User not found';
+      req.log.error(message);
+      throw httpError.NotFound(message);
     }
 
     const authenticated = await authenticateUser(user, req.body.password);
 
     if (!authenticated) {
-      throw httpError.Unauthorized('Incorrect login details');
+      const message = 'Incorrect login details';
+      req.log.error(message);
+      throw httpError.Unauthorized(message);
     }
 
     return res.json(authenticated);

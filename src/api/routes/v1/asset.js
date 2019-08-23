@@ -24,7 +24,9 @@ module.exports = app => {
     try {
       assets = await getAllAssets();
     } catch (err) {
-      throw httpError.InternalServerError('Could not get assets');
+      const message = 'Could not get assets';
+      req.log.error(message);
+      throw httpError.InternalServerError(message);
     }
     return res.json(assets);
   });
@@ -38,7 +40,9 @@ module.exports = app => {
       const assets = await getAssetById(req.params.id);
 
       if (!assets) {
-        throw httpError.NotFound('Asset not found');
+        const message = 'Asset not found';
+        req.log.error(message);
+        throw httpError.NotFound(message);
       }
 
       return res.json(assets);
@@ -57,6 +61,8 @@ module.exports = app => {
       const assets = await createAsset(req.body);
 
       if (!assets) {
+        const message = 'Could not create asset';
+        req.log.error(message);
         throw httpError.InternalServerError('Could not create asset');
       }
 
@@ -74,7 +80,9 @@ module.exports = app => {
       const assets = await upsertAsset(req.params.id, req.body);
 
       if (!assets) {
-        throw httpError.InternalServerError('Could not update asset');
+        const message = 'Could not update asset';
+        req.log.error(message);
+        throw httpError.InternalServerError(message);
       }
 
       return res.json(assets);
@@ -90,13 +98,17 @@ module.exports = app => {
       const assets = await getAssetById(req.params.id);
 
       if (!assets) {
-        throw httpError.NotFound('Could not find asset to remove');
+        const message = 'Could not find asset to remove';
+        req.log.error(message);
+        throw httpError.NotFound(message);
       }
 
       try {
         await removeAsset(assets);
       } catch (err) {
-        throw httpError.InternalServerError('Could not remove asset');
+        const message = 'Could not remove asset';
+        req.log.error(message);
+        throw httpError.InternalServerError(message);
       }
 
       return res.json({
