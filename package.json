@@ -1,15 +1,17 @@
 {
   "name": "express-sql-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "RESTful Express SQL API using Sequelize",
   "main": "src/index.js",
   "scripts": {
     "start": "node .",
-    "start:dev": "nodemon .",
+    "start:dev": "NODE_ENV=development nodemon .",
+    "start:test": "NODE_ENV=test node .",
+    "start:prod": "NODE_ENV=production node .",
     "bootstrap": "npx sequelize db:migrate && npx sequelize db:seed:all",
     "test": "mocha test/**/*.spec.js"
   },
-  "author": "",
+  "author": "Harish Tirunahari",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.2.0",
@@ -33,6 +35,7 @@
     "http-errors": "^1.7.3",
     "jsonwebtoken": "^8.5.1",
     "pino": "^5.13.2",
+    "pino-pretty": "^3.2.1",
     "sequelize": "^5.15.2",
     "sequelize-cli": "^5.5.0",
     "sinon-chai": "^3.3.0",
